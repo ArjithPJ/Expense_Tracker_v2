@@ -5,11 +5,11 @@ const purchaseController = require('../controllers/purchases');
 
 const router = express.Router();
 
-router.get('/signup', adminController.getSignup);
+//router.get('/signup', adminController.getSignup);
 router.post('/signup', adminController.postSignup);
-router.get('/home/:id', adminController.getHome);
+//router.get('/home/:id', adminController.getHome);
 
-router.get('/login', adminController.getLogin);
+//router.get('/login', adminController.getLogin);
 router.post('/login', adminController.postLogin);
 
 router.post('/add-expense/:id', adminController.postAddExpense);
