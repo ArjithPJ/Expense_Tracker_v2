@@ -49,8 +49,8 @@ function populateExpenses() {
             try{
                 const response = await axios.post("http://localhost:3000/premium/leaderboard", leaderboardDetails);
                 if(response.status ===200){
-                    console.log(response.data.leaderboard[0]);
-                    const leaderboard = response.data.leaderboard[0];
+                    console.log(response.data.leaderboard);
+                    const leaderboard = response.data.leaderboard;
                     populateLeaderboard(leaderboard);
                 }
                 else{
@@ -159,11 +159,12 @@ async function populateLeaderboard(leaderboard) {
         tableBody.innerHTML = '';
 
         // Create table rows with updated leaderboard data
+        console.log(leaderboard);
         leaderboard.forEach((entry, index) => {
             const row = document.createElement('tr');
             row.innerHTML = `
                 <td>${entry.name}</td>
-                <td>${entry.totalAmount}</td>
+                <td>${entry.totalExpense}</td>
             `;
             tableBody.appendChild(row);
         });
