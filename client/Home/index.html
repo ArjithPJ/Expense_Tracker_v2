@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+    <link rel="stylesheet" href="home.css">
+    <title>Expenses</title>
+  </head>
+  <body> 
+    <div class="container">
+        <div class="buy-premium">
+            <!-- Button to initiate Razorpay payment -->
+            <button id="buyButton" class="button">Buy Premium</button>        
+        </div>
+        <form class="expense-form" onsubmit="addExpense(event)" >
+            <div class="input-container">
+                <label for="Expense" class="form-label">Choose Expense Amount: </label>
+                <input type="text" id="text1" class="form-control" name="amount" required>
+            </div>
+            
+            <br>
+            <div class="input-container">
+                <label for="description">Choose Description: </label>
+                <input type="text" id="text2" class="form-control" name="description" required>
+            </div>
+            
+            <br>
+            <div class="input-container">
+                <label for="Category">Choose a Category: </label>
+                <select id="category" name="category" class="form-select">
+                    <option value="fuel">Fuel</option>
+                    <option value="food">Food</option>
+                    <option value="electricity">Electricity</option>
+                    <option value="movie">Movie</option>
+                </select>
+            <br>
+            </div>
+            <div class="text-center">
+                <input class="btn btn-primary" id="btn" type="submit" value="Add Expense">
+            </div>    
+        </form>
+        <table class="expense-table" id="expense-table">
+            <thead>
+                <tr>
+                    <th>Amount</th>
+                    <th>Description</th>
+                    <th>Category</th>
+                </tr>
+            </thead>
+            <tbody>
+                    
+            </tbody>
+        </table>
+    </div>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="index.js"></script>
+    <script>
+        var token = localStorage.getItem('token');
+        // Function to handle payment success
+        function paymentSuccess(response) {
+            // Store Razorpay payment ID in your database
+            var paymentId = response.razorpay_payment_id;
+            console.log("Payment ID:", paymentId);
+            localStorage.setItem('payment_id',paymentId);
+            
+            // Get the user ID or any other identifier needed for your backend
+            // Make a Fetch API request to your backend to store payment ID
+            fetch("http://localhost:3000/buypremium/"+ token, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ paymentId: paymentId, token: token })
+            })
+            .then(response => {
+                if (response.status === 200) {
+                    // Payment ID stored successfully
+                    alert('Payment successful! Payment ID: ' + paymentId);                    
+                    return response;
+                } else {
+                    // Handle error
+                    alert('Failed to store payment ID. Please contact support.');
+                }
+            })
+            .then((response)=> {
+                return response.json();
+            })
+            .then((data)=>{
+                console.log(data);
+                const premium = data.premium;
+                localStorage.setItem('premium', JSON.stringify(premium));
+                const buypremium = document.querySelector(".buy-premium");
+                console.log(buypremium);
+                buypremium.remove();
+            })
+            .catch(error => {
+                // Handle network error
+                console.error('Error:', error);
+                alert('Network error. Please try again later.');
+            });
+        }
+
+        // Function to handle payment failure
+        function paymentFailure(error) {
+            // Handle payment failure
+            alert('Payment failed. Please try again later.');
+        }
+
+        // Function to open Razorpay payment gateway
+        function openRazorpay() {
+            var options = {
+                "key": "rzp_test_TcWeNVs0Xw3pNV", // Replace with your Razorpay API key
+                "amount": 2500, // 25 Rupees = 2500 paisa
+                "currency": "INR",
+                "name": "Your Company Name",
+                "description": "Premium Subscription",
+                "handler": function (response) {
+                    // Payment success callback
+                    paymentSuccess(response);
+                },
+                "prefill": {
+                    "name": "Your Name",
+                    "email": "your_email@example.com",
+                    "contact": "9999999999"
+                },
+                "theme": {
+                    "color": "#528FF0"
+                },
+                "modal": {
+                    "ondismiss": function () {
+                        // Payment failure callback
+                        paymentFailure();
+                    }
+                }
+            };
+            var rzp = new Razorpay(options);
+            rzp.open();
+        }
+
+        // Attach click event to the Buy button
+        document.getElementById('buyButton').onclick = function () {
+            openRazorpay();
+        };
+    </script>
+  </body>
+</html>

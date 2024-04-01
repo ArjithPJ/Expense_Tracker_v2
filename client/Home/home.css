@@ -1,0 +1,80 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    background-image: url('../business_woman.jpg');
+    background-size: cover;
+    background-position: center;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.container {
+    background-color: rgba(255, 255, 255, 0.8);
+    padding: 60px;
+    border-radius: 10px;
+    align-items: center;
+    
+}
+
+.container-expenses {
+    background-color: rgba(255, 255, 255, 0.8);
+    padding: 60px;
+    border-radius: 10px;
+    align-items: center;
+}
+
+.input-container {
+    align-items: center;
+    
+}
+
+.input-short {
+    width: 150px  /* Adjust width as needed */
+}
+
+.btn {
+    background-color: green; /* Blue color */
+    border-color: green; /* Blue color for border */
+    padding: 8px;
+    border-radius: 10px;
+    align-items: center
+}
+
+.btn:hover {
+    background-color: #0056b3; /* Darker blue color on hover */
+    border-color: #0056b3; /* Darker blue color for border on hover */
+}
+
+.btn-shine {
+    background-color: #007bff;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-shine::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 300%;
+    height: 300%;
+    background: rgba(255, 255, 255, 0.4);
+    border-radius: 50%;
+    transition: all 0.5s;
+    pointer-events: none;
+    transform: translate(-50%, -50%);
+    z-index: 0;
+}
+
+.btn-shine:hover::after {
+    width: 0;
+    height: 0;
+}
+
+.btn-shine .btn {
+    position: relative;
+    z-index: 1;
+}
