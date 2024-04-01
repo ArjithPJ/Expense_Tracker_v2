@@ -99,8 +99,14 @@ exports.postAddExpense = (req, res, next) => {
                 amount: amount,
                 description: description,
                 category: category,
-                id:  decoded.id
+                id: decoded.id
             })
+            .then(() => {
+                Users.increment(
+                    { totalExpense: amount }, // Increment the amount by the specified value
+                    { where: {id: decoded.id} }    // Apply condition if necessary
+            )
+                })
             .then(() => {
                 return sequelize.query(`SELECT * FROM expenses`);
             })
