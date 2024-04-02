@@ -1,10 +1,13 @@
 const Users = require('../models/users');
 const Expenses = require('../models/expenses');
+const ForgotPasswordRequests = require('../models/forgotPasswordRequests');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const path = require('path');
+const { v4: uuidv4 } = require('uuid');
 const Sib = require('sib-api-v3-sdk');
 require('dotenv').config();
+
 
 const sequelize = require('../util/database');
 
@@ -171,6 +174,9 @@ exports.postForgotPassword = async (req, res, next) => {
         const apiKey = client.authentications['api-key'];
         apiKey.apiKey = process.env.SMTP_API_KEY;
 
+        const resetToken = uuidv4();
+        const resetLink = `http://localhost:3000/password/resetpassword/${resetToken}`;
+
         const tranEmailApi = new Sib.TransactionalEmailsApi();
 
         const sender = {
@@ -187,13 +193,44 @@ exports.postForgotPassword = async (req, res, next) => {
             sender,
             to: receivers,
             subject: 'Reset Password',
-            textContent:`Click here to reset password`
+            htmlContent: `Click <a href="${resetLink}">here</a> to reset your password.`
         });
         console.log("Email Sent");
+        res.status(200).json({message: "Email sent", email: email});
     }
     catch{
         console.log("Email couldn't be sent");
+        res.status(500).json({message: "Internal Server Error"});
     }
 };
+
+exports.getResetPassword = (req, res, next) => {
+    const uuid = req.params.uuid;
+    console.log(uuid);
+    res.sendFile(path.join(__dirname, '../', '../','client', 'Login', 'resetPassword.html'));
+};
+
+exports.postResetPassword = async (req, res, next) => {
+    const newPassword = req.body.password;
+    const email = req.body.email;
+    const t = await sequelize.transaction();
+    const saltrounds = 10;
+    const hashedPassword = await bcrypt.hash(newPassword, saltrounds);
+    try{
+        
+        await Users.update(
+            { password: hashedPassword },
+            { where: { email: email }, transaction: t }
+        );
+        res.status(200).json({message: "Password Updated"});
+        await t.commit();
+    }
+    catch{
+        await t.rollback();
+        res.status(500).json({message: "Internal Server Error"});
+    }
+
+};
+
 
 

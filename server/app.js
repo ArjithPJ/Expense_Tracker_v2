@@ -8,6 +8,7 @@ const sequelize = require('./util/database');
 const Users = require('./models/users');
 const Expenses = require('./models/expenses');
 const Orders = require('./models/purchases');
+const ForgotPasswordRequests = require('./models/forgotPasswordRequests');
 const path = require('path');
 
 const app = express();
@@ -32,6 +33,9 @@ Expenses.belongsTo(Users, { foreignKey: 'id'});
 
 Users.hasMany(Orders);
 Orders.belongsTo(Users);
+
+Users.hasMany(ForgotPasswordRequests);
+ForgotPasswordRequests.belongsTo(Users);
 
 sequelize
     .sync()

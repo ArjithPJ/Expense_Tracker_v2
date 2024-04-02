@@ -35,23 +35,6 @@ exports.postbuyPremium = (req, res, next) => {
     })
 };
 
-// exports.postLeaderboard = async(req, res, next) => {
-//     const token = req.body.token;
-//     const decodedToken = jwt.verify(token, 'nffoinofinoeifnaskmoj');
-//     const id = decodedToken.id;
-//     try{
-//         const leaderboard =await sequelize.query(`SELECT u.name, SUM(e.amount) AS totalAmount
-//         FROM Users u
-//         JOIN Expenses e ON u.id = e.id
-//         GROUP BY u.id
-//         ORDER BY totalAmount DESC;`);
-//         res.status(200).json({leaderboard:leaderboard});
-//     }
-//     catch(error){
-//         console.error('Error fetching leaderboeard', error);
-//         res.status(500).json({error: 'Internal Server Error'});
-//     }
-// };
 
 exports.postLeaderboard = async (req, res, next) => {
     try{
@@ -60,21 +43,6 @@ exports.postLeaderboard = async (req, res, next) => {
             order: [['totalExpense', 'DESC']]
         });
         res.status(200).json({ leaderboard: users});
-        // const userAggregatedExpenses ={};
-        // await expenses.forEach((expense) => {
-        //     if(userAggregatedExpenses[expense.id]){
-        //         userAggregatedExpenses[expense.id] = userAggregatedExpenses[expense.id]+expense.amount;
-        //     }
-        //     else{
-        //         userAggregatedExpenses[expense.id] = expense.amount;
-        //     }
-        // });
-        // console.log(userAggregatedExpenses);
-        // var userLeaderBoardDetails = [];
-        // await users.forEach((user) => {
-        //     userLeaderBoardDetails.push({name: user.name, totalAmount: userAggregatedExpenses[user.id]});
-        // })
-        // res.status(200).json({leaderboard: userLeaderBoardDetails});
     }
     catch{
         console.error("Details not found");
