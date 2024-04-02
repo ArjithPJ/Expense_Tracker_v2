@@ -17,4 +17,6 @@ router.post('/delete-expense/:id', adminController.postDeleteExpense);
 
 router.post('/buypremium/:id',purchaseController.postbuyPremium);
 router.post('/premium/leaderboard',purchaseController.postLeaderboard);
+
+router.post('/password/forgotpassword', adminController.postForgotPassword);
 module.exports = router;

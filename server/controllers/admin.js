@@ -3,7 +3,8 @@ const Expenses = require('../models/expenses');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const path = require('path');
-require('dotenv');
+const Sib = require('sib-api-v3-sdk');
+require('dotenv').config();
 
 const sequelize = require('../util/database');
 
@@ -162,4 +163,37 @@ exports.postDeleteExpense = async (req, res, next) => {
         return res.status(500).json({ message: "Internal server error" });
     }
 };
+
+exports.postForgotPassword = async (req, res, next) => {
+    const email =req.body.email;
+    const client = Sib.ApiClient.instance;
+    try{
+        const apiKey = client.authentications['api-key'];
+        apiKey.apiKey = process.env.SMTP_API_KEY;
+
+        const tranEmailApi = new Sib.TransactionalEmailsApi();
+
+        const sender = {
+            email: 'pjarjith@gmail.com'
+        }
+
+        const receivers = [
+            {
+                email: email
+            }
+        ]
+
+        await tranEmailApi.sendTransacEmail({
+            sender,
+            to: receivers,
+            subject: 'Reset Password',
+            textContent:`Click here to reset password`
+        });
+        console.log("Email Sent");
+    }
+    catch{
+        console.log("Email couldn't be sent");
+    }
+};
+
 
