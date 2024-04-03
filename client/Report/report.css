@@ -1,0 +1,35 @@
+/* Set background image for the body */
+body {
+    /* background-image: url('../business_woman.jpg'); */
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-color: #4FFFB0;
+}
+
+/* Style for the table */
+.expense-table {
+    width: 100%;
+    border: 1px solid #000;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.expense-table tr:nth-child(even) {
+    background-color: #fff; /* Set background color for even rows */
+}
+
+.expense-table tr:nth-child(odd) {
+    background-color: #fff; /* Set background color for odd rows */
+}
+.expense-table th, .expense-table td {
+    padding: 8px;
+    text-align: left;
+    border-bottom: 1px solid #000; /* Add bottom border to table cells */
+    border-right: 1px solid #000; /* Add right border to table cells */
+}
+
+/* Style for table header */
+.expense-table th {
+    background-color: #ccc; /* Set background color for table header */
+    color: #000;
+}
