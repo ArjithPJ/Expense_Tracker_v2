@@ -5,17 +5,18 @@ const sequelize = require('../util/database');
 
 const ForgotPasswordRequests = sequelize.define('forgotpasswordrequests', {
   uuid: {
-    type: Sequelize.INTEGER,
+    type: Sequelize.STRING,
     allowNull: false,
     primaryKey: true
   },
   userId: {
-    type: Sequelize.STRING,
+    type: Sequelize.INTEGER,
     allowNull: false
   },
   isActive: {
     type: Sequelize.BOOLEAN,
-    allowNull: false 
+    allowNull: false,
+    defaultValue: true
   }
 });
 

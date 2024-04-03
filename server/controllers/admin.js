@@ -170,19 +170,20 @@ exports.postDeleteExpense = async (req, res, next) => {
 exports.postForgotPassword = async (req, res, next) => {
     const email =req.body.email;
     const client = Sib.ApiClient.instance;
+    const t = await sequelize.transaction();
     try{
         const apiKey = client.authentications['api-key'];
         apiKey.apiKey = process.env.SMTP_API_KEY;
 
         const resetToken = uuidv4();
         const resetLink = `http://localhost:3000/password/resetpassword/${resetToken}`;
+        console.log("Reset Link:", resetLink);
 
         const tranEmailApi = new Sib.TransactionalEmailsApi();
 
         const sender = {
             email: 'pjarjith@gmail.com'
         }
-
         const receivers = [
             {
                 email: email
@@ -194,20 +195,41 @@ exports.postForgotPassword = async (req, res, next) => {
             to: receivers,
             subject: 'Reset Password',
             htmlContent: `Click <a href="${resetLink}">here</a> to reset your password.`
-        });
+        }, {transaction: t});
         console.log("Email Sent");
+        console.log(resetToken);
+
+        const user = await Users.findOne({ where: { email: email}, transaction: t});
+        let userId;
+        console.log(user.id);
+        if(user){
+            userId = user.id;
+            await ForgotPasswordRequests.create({
+                uuid: resetToken,
+                userId: userId,
+                isActive: true
+            }, {transaction: t});
+        }
+        await t.commit();
         res.status(200).json({message: "Email sent", email: email});
     }
-    catch{
+    catch(error){
+        await t.rollback();
+        console.error(error);
         console.log("Email couldn't be sent");
         res.status(500).json({message: "Internal Server Error"});
     }
 };
 
-exports.getResetPassword = (req, res, next) => {
+exports.getResetPassword = async (req, res, next) => {
     const uuid = req.params.uuid;
     console.log(uuid);
-    res.sendFile(path.join(__dirname, '../', '../','client', 'Login', 'resetPassword.html'));
+    try{
+        res.sendFile(path.join(__dirname, '../', '../','client', 'Login', 'resetPassword.html'));
+    }
+    catch(error){
+        console.error(error);
+    }
 };
 
 exports.postResetPassword = async (req, res, next) => {
@@ -215,18 +237,37 @@ exports.postResetPassword = async (req, res, next) => {
     const email = req.body.email;
     const t = await sequelize.transaction();
     const saltrounds = 10;
+    console.log("111");
     const hashedPassword = await bcrypt.hash(newPassword, saltrounds);
     try{
+        const user = await Users.findOne({ where:{ email: email}, transaction: t});
+        const isActive = await ForgotPasswordRequests.findOne({ where: {userId: user.id }, transaction: t});
+        console.log("222")
+        console.log("isActive", isActive);
+        if(isActive.isActive){
         
-        await Users.update(
-            { password: hashedPassword },
-            { where: { email: email }, transaction: t }
-        );
-        res.status(200).json({message: "Password Updated"});
-        await t.commit();
+            await Users.update(
+                { password: hashedPassword },
+                { where: { email: email }, transaction: t }
+            );
+            console.log("damns")
+            await ForgotPasswordRequests.update(
+                {isActive: false},
+                {where: {userId:user.id}}
+            );
+            console.log("wtf");
+            res.status(200).json({message: "Password Updated"});
+            await t.commit();
+            console.log("333");
+        }
+        else{
+            await t.rollback();
+            res.status(401).json({message: "Reset Password Link expired"});
+        }
     }
-    catch{
+    catch(error){
         await t.rollback();
+        console.error(error);
         res.status(500).json({message: "Internal Server Error"});
     }
 
