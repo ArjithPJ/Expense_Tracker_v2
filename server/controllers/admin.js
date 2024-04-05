@@ -240,28 +240,22 @@ exports.postResetPassword = async (req, res, next) => {
     const email = req.body.email;
     const t = await sequelize.transaction();
     const saltrounds = 10;
-    console.log("111");
     const hashedPassword = await bcrypt.hash(newPassword, saltrounds);
     try{
         const user = await Users.findOne({ where:{ email: email}, transaction: t});
         const isActive = await ForgotPasswordRequests.findOne({ where: {userId: user.id }, transaction: t});
-        console.log("222")
-        console.log("isActive", isActive);
         if(isActive.isActive){
         
             await Users.update(
                 { password: hashedPassword },
                 { where: { email: email }, transaction: t }
             );
-            console.log("damns")
             await ForgotPasswordRequests.update(
                 {isActive: false},
                 {where: {userId:user.id}}
             );
-            console.log("wtf");
             res.status(200).json({message: "Password Updated"});
             await t.commit();
-            console.log("333");
         }
         else{
             await t.rollback();
