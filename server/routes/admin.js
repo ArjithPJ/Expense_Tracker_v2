@@ -2,6 +2,7 @@ const express =require('express');
 
 const adminController = require('../controllers/admin');
 const purchaseController = require('../controllers/purchases');
+const authenticatemiddleware = require('../middleware/auth');
 
 const router = express.Router();
 
@@ -21,4 +22,6 @@ router.post('/premium/leaderboard',purchaseController.postLeaderboard);
 router.post('/password/forgotpassword', adminController.postForgotPassword);
 router.get('/password/resetpassword/:uuid', adminController.getResetPassword);
 router.post('/password/resetpassword', adminController.postResetPassword);
+router.post('/download', authenticatemiddleware.authenticate, adminController.postDownload);
+
 module.exports = router;

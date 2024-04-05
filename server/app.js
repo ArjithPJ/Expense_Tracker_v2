@@ -9,11 +9,12 @@ const Users = require('./models/users');
 const Expenses = require('./models/expenses');
 const Orders = require('./models/purchases');
 const ForgotPasswordRequests = require('./models/forgotPasswordRequests');
+const FileUrls = require('./models/fileUrls');
 const path = require('path');
 
 const app = express();
-app.set('view engine', 'ejs');
-app.set('views', 'views');
+// app.set('view engine', 'ejs');
+// app.set('views', 'views');
 
 const adminRoutes = require('./routes/admin');
 

@@ -17,7 +17,6 @@
             <button id="buyButton" class="button">Buy Premium</button>        
         </div>
         <div class="download">
-            <!-- Button to initiate Razorpay payment -->
             <button id="download" class="button">Download</button>        
         </div>
         <table class="expense-table" id="expense-table">
@@ -33,14 +32,66 @@
             </tbody>
         </table>
     </div>
+    <div id="downloads-container">
+       
+    </div>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="report.js"></script>
     <script>
         
 
         // Attach click event to the Buy button
-        document.getElementById('download').onclick = function () {
-        };
+        document.getElementById('download').onclick = async function () {
+            try{
+                const token = localStorage.getItem('token');
+                const expenses = localStorage.getItem('expenses');
+                console.log("Expenses: ",expenses);
+                const UserDetails = {
+                    token: token,
+                    expenses: expenses
+                }
+
+                const response = await axios.post('http://localhost:3000/download', UserDetails,  {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                if(response.status === 200){
+                    console.log("Download Completed");
+                    console.log(response.data.fileUrl);
+                    var a =document.createElement("a");
+                    a.href = response.data.fileUrl;
+                    a.download = 'myexpense.csv';
+                    a.click();
+                    const downloads = response.data.downloads;
+                    await showDownloads(downloads);
+
+                }
+                else{
+                    console.log("Something went wrong");
+                }
+            }
+            catch(error){
+                console.error(error);
+            }
+        }
+
+        async function showDownloads(downloads) {
+
+            const filenamesList = document.createElement("ul");
+            downloads.forEach(download => {
+                const filenameLink = document.createElement("a");
+                filenameLink.href = download.fileUrl;
+                filenameLink.textContent = download.filename;
+                filenamesList.appendChild(filenameLink);
+            });
+
+            const filenamesContainer = document.getElementById("downloads-container");
+            filenamesContainer.appendChild(filenamesList);
+
+        
+        }
+
     </script>
   </body>
 </html>

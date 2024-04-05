@@ -1,11 +1,14 @@
 const Users = require('../models/users');
 const Expenses = require('../models/expenses');
 const ForgotPasswordRequests = require('../models/forgotPasswordRequests');
+const FileUrls = require('../models/fileUrls');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const path = require('path');
 const { v4: uuidv4 } = require('uuid');
 const Sib = require('sib-api-v3-sdk');
+const AWS = require('aws-sdk');
+const Userservices = require('../services/userservices');
 require('dotenv').config();
 
 
@@ -272,6 +275,64 @@ exports.postResetPassword = async (req, res, next) => {
     }
 
 };
+
+exports.postDownload = async (req, res, next) => {
+    try{
+        const token =req.body.token;
+        const decoded = await jwt.verify(token, 'nffoinofinoeifnaskmoj');
+        const expenses = await Expenses.findAll({ where: {id: decoded.id }});
+        console.log(expenses);
+        const stringifiedExpenses = JSON.stringify(expenses);
+        const userId = decoded.id;
+        const filename = `Expenses${userId}/${new Date()}.txt`;
+        const fileUrl = await uploadToS3(stringifiedExpenses, filename);
+        await FileUrls.create({
+            id: userId,
+            filename: filename,
+            fileUrl: fileUrl
+        });
+        const downloads = await FileUrls.findAll({ where:{ id: userId}});
+
+        res.status(200).json({fileUrl: fileUrl, success: true, downloads: downloads, err: null});
+    }
+    catch(error){
+        console.log(error);
+        res.status(500).json({message:"Internal Server Error", fileUrl: '', downloads: '', success: false, err: error})
+    }
+    
+}
+
+function uploadToS3(data, filename) {
+    const BUCKET_NAME = 'expensetracker2000';
+    const IAM_USER_KEY = 'AKIAVRUVUZ54K3XJPK4O';
+    const IAM_USER_SECRET ='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';
+    
+    let s3bucket = new AWS.S3({
+        accessKeyId: IAM_USER_KEY,
+        secretAccessKey: IAM_USER_SECRET,
+        //Bucket: BUCKET_NAME
+    });
+    var params = {
+        Bucket: BUCKET_NAME,
+        Key: filename,
+        Body: data,
+        ACL: 'public-read'
+    }
+    return new Promise((resolve, reject) => {
+        s3bucket.upload(params, (err, s3response) => {
+            if(err){
+                console.log('Something went wrong', err);
+                reject(err);
+            }
+            else{
+                resolve(s3response.Location);
+            }
+        })
+    })
+    
+
+}
+
 
 
 
