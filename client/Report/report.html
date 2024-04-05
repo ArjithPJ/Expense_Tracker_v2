@@ -38,7 +38,18 @@
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="report.js"></script>
     <script>
-        
+        const filenamesContainer = document.getElementById("downloads-container");
+        const filenamesList = document.createElement("ul");
+        filenamesContainer.innerHTML="";
+        const downloads = JSON.parse(localStorage.getItem('downloads'));
+        console.log(downloads);
+        downloads.forEach(download => {
+            const filenameLink = document.createElement("a");
+            filenameLink.href = download.fileUrl;
+            filenameLink.textContent = download.filename;
+            filenamesList.appendChild(filenameLink);
+        });
+        filenamesContainer.appendChild(filenamesList);
 
         // Attach click event to the Buy button
         document.getElementById('download').onclick = async function () {
@@ -64,6 +75,7 @@
                     a.download = 'myexpense.csv';
                     a.click();
                     const downloads = response.data.downloads;
+                    localStorage.setItem('downloads', JSON.stringify(downloads));
                     await showDownloads(downloads);
 
                 }
@@ -87,10 +99,13 @@
             });
 
             const filenamesContainer = document.getElementById("downloads-container");
+            filenamesContainer.innerHTML="";
             filenamesContainer.appendChild(filenamesList);
 
         
         }
+
+        
 
     </script>
   </body>

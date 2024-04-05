@@ -303,9 +303,9 @@ exports.postDownload = async (req, res, next) => {
 }
 
 function uploadToS3(data, filename) {
-    const BUCKET_NAME = 'expensetracker2000';
-    const IAM_USER_KEY = 'AKIAVRUVUZ54K3XJPK4O';
-    const IAM_USER_SECRET ='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';
+    const BUCKET_NAME = process.env.BUCKET_NAME;
+    const IAM_USER_KEY = process.env.IAM_USER_KEY;
+    const IAM_USER_SECRET = process.env.IAM_USER_SECRET;
     
     let s3bucket = new AWS.S3({
         accessKeyId: IAM_USER_KEY,
