@@ -24,21 +24,21 @@ exports.postLogin = async (req, res, next) => {
                 const premium = user.premium;
                 console.log("User id:", userId);
                 const expenses = await Expenses.findAll({where:{id: userId}},{transaction: t});
-                const total = await Expenses.count();
+                const total = await Expenses.count({where: {id: userId}});
                 const pageExpenses = await Expenses.findAll({
                     where: {id: userId},
                     offset: 0,
-                    limit: 10
+                    limit: 5
                 });
                 console.log("pageExpenses:", pageExpenses);
                 const token = jwt.sign({ id: userId }, 'nffoinofinoeifnaskmoj');
                 await t.commit();
                 res.status(200).json({ token: token, id: userId, expenses: expenses, premium: premium, pageExpenses: pageExpenses, currentPage: 1,
-                    hasNextPage: 10<total,
-                    nextPage: 1,
+                    hasNextPage: 5<total,
+                    nextPage: 2,
                     hasPreviousPage: 1 > 1,
-                    previousPage: 1 - 1,
-                    lastPage: Math.ceil(total/10)});
+                    previousPage: 0,
+                    lastPage: Math.ceil(total/5)});
             } else {
                 res.status(401).json({ message: "Incorrect Password" });
             }

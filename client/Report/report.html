@@ -43,13 +43,15 @@
         filenamesContainer.innerHTML="";
         const downloads = JSON.parse(localStorage.getItem('downloads'));
         console.log(downloads);
-        downloads.forEach(download => {
-            const filenameLink = document.createElement("a");
-            filenameLink.href = download.fileUrl;
-            filenameLink.textContent = download.filename;
-            filenamesList.appendChild(filenameLink);
-        });
-        filenamesContainer.appendChild(filenamesList);
+        if(downloads){
+            downloads.forEach(download => {
+                const filenameLink = document.createElement("a");
+                filenameLink.href = download.fileUrl;
+                filenameLink.textContent = download.filename;
+                filenamesList.appendChild(filenameLink);
+            });
+            filenamesContainer.appendChild(filenamesList);
+        }
 
         // Attach click event to the Buy button
         document.getElementById('download').onclick = async function () {

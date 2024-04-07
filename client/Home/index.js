@@ -17,9 +17,26 @@ async function addExpense(e) {
         if(response.status === 200) {   
             const expenses= response.data.expenses;
             const pageExpenses = response.data.pageExpenses;
+            const nextPage = response.data.nextPage;
+            const currentPage = response.data.currentPage;
+            const hasNextPage = response.data.hasNextPage;
+            const previousPage = response.data.previousPage;
+            const hasPreviousPage = response.data.hasPreviousPage;
+            const lastPage = response.data.lastPage;
+            // currentPage: 1,
+            // hasNextPage: parseInt(currentPage,10)<total,
+            // nextPage: parseInt(currentPage, 10)+1,
+            // hasPreviousPage: parseInt(currentPage,10) > 1,
+            // previousPage: parseInt(currentPage,10) - 1,
+            // lastPage: parseInt(lastPage,10) });
             console.log("Expenses", expenses);
             localStorage.setItem('expenses',JSON.stringify(expenses));
             localStorage.setItem('pageExpenses', JSON.stringify(pageExpenses));
+            localStorage.setItem('nextPage', JSON.stringify(nextPage));
+            localStorage.setItem('currentpage', JSON.stringify(currentPage));
+            localStorage.setItem('hasNextPage', JSON.stringify(hasNextPage));
+            localStorage.setItem('hasPreviousPage', JSON.stringify(hasPreviousPage));
+            localStorage.setItem('lastPage', JSON.stringify(lastPage));
             console.log(pageExpenses);
             console.log("Expense Added in the database");
             await populateExpenses();
@@ -49,7 +66,6 @@ async function populateExpenses() {
         const token = localStorage.getItem('token');
         const leaderboardDetails = {token:token};
         leaderboard.addEventListener("click", async function() {
-            // Add event listener to the leaderboard button
             try{
                 const response = await axios.post("http://localhost:3000/premium/leaderboard", leaderboardDetails);
                 if(response.status ===200){
@@ -64,10 +80,10 @@ async function populateExpenses() {
             catch(error){
                 console.error("Error:", error);
             }
-        });
-        
+        }); 
     }
     const expensesString = localStorage.getItem('pageExpenses');
+    console.log(expensesString);
     const expenses = JSON.parse(expensesString);
     const expenseList = document.getElementById('expense-table').getElementsByTagName('tbody')[0];
     expenseList.innerHTML = ''; // Clear previous entries
@@ -90,16 +106,40 @@ async function populateExpenses() {
     });
     const lastPage = localStorage.getItem('lastPage');
     const paginationContainer = document.querySelector("#pagination");
+    const token = localStorage.getItem('token');
     paginationContainer.innerHTML = ""; // Clear previous buttons
 
     for (let i = 1; i <= lastPage; i++) {
         const button = document.createElement("button");
         button.textContent = i;
         button.classList.add("btn", "btn-secondary", "mx-1");
-        button.addEventListener("click", () => {
-            const response = axios.get(`http://localhost:3000/home/?page=${i}`);
-        });
         paginationContainer.appendChild(button);
+        button.addEventListener("click", () => {
+            axios.get(`http://localhost:3000/home/?page=${i}`,{
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            })
+            .then((response) =>{
+                console.log("Response:", response);
+                const pageExpenses = response.data.pageExpenses;
+                console.log("Pageexpeenses:", pageExpenses);
+                const expenses = response.data.expenses;
+                const currentPage = response.data.currentPage;
+                const nextPage = response.data.nextPage;
+                const hasPreviousPage = response.data.hasPreviousPage;
+                const hasNextPage = response.data.hasNextPage;
+                localStorage.setItem('pageExpenses',JSON.stringify(pageExpenses));
+                localStorage.setItem('expenses',JSON.stringify(expenses));
+                localStorage.setItem('currentPage',JSON.stringify(currentPage));
+                localStorage.setItem('nextPage', JSON.stringify(nextPage));
+                localStorage.setItem('hasPreviousPage',JSON.stringify(hasPreviousPage));
+                localStorage.setItem('hasNextPage', JSON.stringify(hasNextPage));
+                populateExpenses();
+            })
+            
+        });
+        
     }
 }
 

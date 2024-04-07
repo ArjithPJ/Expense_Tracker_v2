@@ -1,23 +1,13 @@
 const Users = require('../models/users');
 const Expenses = require('../models/expenses');
-const ForgotPasswordRequests = require('../models/forgotPasswordRequests');
-const FileUrls = require('../models/fileUrls');
-const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const path = require('path');
-const { v4: uuidv4 } = require('uuid');
-const Sib = require('sib-api-v3-sdk');
-const AWS = require('aws-sdk');
-const Userservices = require('../services/userservices');
 require('dotenv').config();
-
-
 const sequelize = require('../util/database');
 
 
 exports.getExpenses = async (req, res, next) => {
     try{
-        const currentPage = req.query.page;
+        const page = req.query.page;
         const authHeader = req.headers.authorization;
         
         if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -27,22 +17,22 @@ exports.getExpenses = async (req, res, next) => {
         const token = authHeader.split(' ')[1]; // Extract just the token value
         console.log("Token:", token);
         const id = await jwt.verify(token, 'nffoinofinoeifnaskmoj')
-        const total = await Expenses.count();
+        const total = await Expenses.count({where: { id: id.id}});
         console.log(total);
         const pageExpenses = await Expenses.findAll({
             where: {id: id.id},
-            offset: (currentPage-1)*10,
-            limit: 10
+            offset: (page-1)*5,
+            limit: 5
         });
         console.log("pageExpenses:", pageExpenses);
         res.status(200).json({
             pageExpenses: pageExpenses,
-            currentPage: currentPage,
-            hasNextPage: 10*currentPage<total,
-            nextPage: currentPage + 1,
-            hasPreviousPage: currentPage > 1,
-            previousPage: currentPage - 1,
-            lastPage: Math.ceil(total/10)
+            currentPage: parseInt(page,10),
+            hasNextPage: 5*parseInt(page,10)<total,
+            nextPage: parseInt(page,10) + 1,
+            hasPreviousPage: parseInt(page,10) > 1,
+            previousPage: parseInt(page,10) - 1,
+            lastPage: Math.ceil(total/5)
         });
     }
     catch(error){
@@ -86,16 +76,24 @@ exports.postAddExpense = async (req, res, next) => {
 
         // Send the response
         console.log("Final Expenses: ", expenses);
+
+        const total = await Expenses.count({where: {id: decoded.id}});
         const pageExpenses = await Expenses.findAll({
             where: { id: decoded.id},
-            offset: (currentPage-1)*10,
-            limit: 10
+            offset: (currentPage-1)*5,
+            limit: 5
         });
 
         console.log("pageExpenses:",pageExpenses);
         console.log("Expenses:", expenses);
+        const lastPage = Math.ceil(total/5)
         
-        return res.status(200).json({ message: 'Expense Added', expenses: expenses, pageExpenses: pageExpenses });
+        return res.status(200).json({ message: 'Expense Added', expenses: expenses, pageExpenses: pageExpenses,currentPage: 1,
+        hasNextPage: parseInt(currentPage,10)<total,
+        nextPage: parseInt(currentPage, 10)+1,
+        hasPreviousPage: parseInt(currentPage,10) > 1,
+        previousPage: parseInt(currentPage,10) - 1,
+        lastPage: parseInt(lastPage,10) });
     } 
     catch (error) {
         // Rollback the transaction if an error occurs
@@ -125,17 +123,23 @@ exports.postDeleteExpense = async (req, res, next) => {
             await t.commit();
             const pageExpenses = await Expenses.findAll({
                 where: { id: decoded.id},
-                offset: (currentPage-1)*10,
-                limit: 10
+                offset: (currentPage-1)*5,
+                limit: 5
             });
     
             // Retrieve updated expenses
             const expenses = await Expenses.findAll({where: {id: decoded.id}},);
             console.log("pageExpenses:",pageExpenses);
             console.log("Expenses:", expenses);
-
-            // Send response
-            return res.status(200).json({ message: "Expense Deleted", expenses: expenses, pageExpenses: pageExpenses });
+            const total = await Expenses.count({where: {id: decoded.id}});
+            const lastPage = Math.ceil(total/5);
+            
+            return res.status(200).json({ message: 'Expense Added', expenses: expenses, pageExpenses: pageExpenses,currentPage: 1,
+            hasNextPage: parseInt(currentPage,10)<total,
+            nextPage: parseInt(currentPage, 10)+1,
+            hasPreviousPage: parseInt(currentPage,10) > 1,
+            previousPage: parseInt(currentPage,10) - 1,
+            lastPage: parseInt(lastPage,10) });
         } catch (error) {
             // Rollback the transaction if an error occurs
             await t.rollback();

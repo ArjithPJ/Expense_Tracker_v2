@@ -23,6 +23,7 @@ async function login(e) {
             localStorage.setItem('premium', premium);
             localStorage.setItem('currentpage',1);
             localStorage.setItem('lastPage', lastPage);
+            localStorage.setItem('nextPage', response.data.nextPage);
             const page = 1;
             const pageExpenses =  response.data.pageExpenses;
             const data = response.data;
