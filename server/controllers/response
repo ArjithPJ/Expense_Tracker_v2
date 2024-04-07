@@ -1,0 +1,11 @@
+token: token,
+id: userId, 
+expenses: expenses, 
+premium: premium, 
+pageExpenses: pageExpenses, 
+currentPage: 1,
+hasNextPage: 10<total,
+nextPage: 1,
+hasPreviousPage: 1 > 1,
+previousPage: 1 - 1,
+lastPage: Math.ceil(total/10)
