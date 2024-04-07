@@ -54,9 +54,6 @@ exports.postAddExpense = async (req, res, next) => {
         const decoded = await jwt.verify(token, 'nffoinofinoeifnaskmoj');
         console.log('Decoded token:', decoded);
 
-        // Start a transaction
-        
-
         // Create the expense
         await Expenses.create({
             amount: amount,
@@ -86,9 +83,9 @@ exports.postAddExpense = async (req, res, next) => {
 
         console.log("pageExpenses:",pageExpenses);
         console.log("Expenses:", expenses);
-        const lastPage = Math.ceil(total/5)
+        const lastPage = Math.ceil(total/5);
         
-        return res.status(200).json({ message: 'Expense Added', expenses: expenses, pageExpenses: pageExpenses,currentPage: 1,
+        return res.status(200).json({ message: 'Expense Added', expenses: expenses, pageExpenses: pageExpenses,currentPage: parseInt(currentPage,10),
         hasNextPage: parseInt(currentPage,10)<total,
         nextPage: parseInt(currentPage, 10)+1,
         hasPreviousPage: parseInt(currentPage,10) > 1,
@@ -118,7 +115,12 @@ exports.postDeleteExpense = async (req, res, next) => {
         try {
             // Find the expense by its primary key and delete it
             const expense = await Expenses.findByPk(expenseId, { transaction: t });
+            const amount = expense.amount;
             await expense.destroy({ transaction: t });
+            await Users.update(
+                { totalExpense: sequelize.literal(`totalExpense - ${amount}`) },
+                { where: { id: decoded.id }, transaction: t }
+            );
             
             await t.commit();
             const pageExpenses = await Expenses.findAll({
@@ -134,7 +136,7 @@ exports.postDeleteExpense = async (req, res, next) => {
             const total = await Expenses.count({where: {id: decoded.id}});
             const lastPage = Math.ceil(total/5);
             
-            return res.status(200).json({ message: 'Expense Added', expenses: expenses, pageExpenses: pageExpenses,currentPage: 1,
+            return res.status(200).json({ message: 'Expense Added', expenses: expenses, pageExpenses: pageExpenses,currentPage: currentPage,
             hasNextPage: parseInt(currentPage,10)<total,
             nextPage: parseInt(currentPage, 10)+1,
             hasPreviousPage: parseInt(currentPage,10) > 1,

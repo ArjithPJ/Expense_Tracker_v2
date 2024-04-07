@@ -3,7 +3,7 @@ async function addExpense(e) {
         e.preventDefault();
         console.log(e.target.amount.value);
         const token =localStorage.getItem('token');
-        const currentPage = localStorage.getItem('currentpage');
+        const currentPage = localStorage.getItem('currentPage');
         const expenseDetails = {
             amount: e.target.amount.value,
             description: e.target.description.value,
@@ -33,7 +33,7 @@ async function addExpense(e) {
             localStorage.setItem('expenses',JSON.stringify(expenses));
             localStorage.setItem('pageExpenses', JSON.stringify(pageExpenses));
             localStorage.setItem('nextPage', JSON.stringify(nextPage));
-            localStorage.setItem('currentpage', JSON.stringify(currentPage));
+            localStorage.setItem('currentPage', JSON.stringify(currentPage));
             localStorage.setItem('hasNextPage', JSON.stringify(hasNextPage));
             localStorage.setItem('hasPreviousPage', JSON.stringify(hasPreviousPage));
             localStorage.setItem('lastPage', JSON.stringify(lastPage));
@@ -124,13 +124,11 @@ async function populateExpenses() {
                 console.log("Response:", response);
                 const pageExpenses = response.data.pageExpenses;
                 console.log("Pageexpeenses:", pageExpenses);
-                const expenses = response.data.expenses;
                 const currentPage = response.data.currentPage;
                 const nextPage = response.data.nextPage;
                 const hasPreviousPage = response.data.hasPreviousPage;
                 const hasNextPage = response.data.hasNextPage;
                 localStorage.setItem('pageExpenses',JSON.stringify(pageExpenses));
-                localStorage.setItem('expenses',JSON.stringify(expenses));
                 localStorage.setItem('currentPage',JSON.stringify(currentPage));
                 localStorage.setItem('nextPage', JSON.stringify(nextPage));
                 localStorage.setItem('hasPreviousPage',JSON.stringify(hasPreviousPage));

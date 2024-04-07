@@ -51,42 +51,42 @@
                 filenamesList.appendChild(filenameLink);
             });
             filenamesContainer.appendChild(filenamesList);
-        }
 
-        // Attach click event to the Buy button
-        document.getElementById('download').onclick = async function () {
-            try{
-                const token = localStorage.getItem('token');
-                const expenses = localStorage.getItem('expenses');
-                console.log("Expenses: ",expenses);
-                const UserDetails = {
-                    token: token,
-                    expenses: expenses
-                }
-
-                const response = await axios.post('http://localhost:3000/download', UserDetails,  {
-                    headers: {
-                        'Authorization': `Bearer ${token}`
+            // Attach click event to the Buy button
+            document.getElementById('download').onclick = async function () {
+                try{
+                    const token = localStorage.getItem('token');
+                    const expenses = localStorage.getItem('expenses');
+                    console.log("Expenses: ",expenses);
+                    const UserDetails = {
+                        token: token,
+                        expenses: expenses
                     }
-                });
-                if(response.status === 200){
-                    console.log("Download Completed");
-                    console.log(response.data.fileUrl);
-                    var a =document.createElement("a");
-                    a.href = response.data.fileUrl;
-                    a.download = 'myexpense.csv';
-                    a.click();
-                    const downloads = response.data.downloads;
-                    localStorage.setItem('downloads', JSON.stringify(downloads));
-                    await showDownloads(downloads);
 
+                    const response = await axios.post('http://localhost:3000/download', UserDetails,  {
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        }
+                    });
+                    if(response.status === 200){
+                        console.log("Download Completed");
+                        console.log(response.data.fileUrl);
+                        var a =document.createElement("a");
+                        a.href = response.data.fileUrl;
+                        a.download = 'myexpense.csv';
+                        a.click();
+                        const downloads = response.data.downloads;
+                        localStorage.setItem('downloads', JSON.stringify(downloads));
+                        await showDownloads(downloads);
+
+                    }
+                    else{
+                        console.log("Something went wrong");
+                    }
                 }
-                else{
-                    console.log("Something went wrong");
+                catch(error){
+                    console.error(error);
                 }
-            }
-            catch(error){
-                console.error(error);
             }
         }
 

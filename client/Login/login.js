@@ -21,7 +21,7 @@ async function login(e) {
             localStorage.setItem('id', userId);
             localStorage.setItem('expenses', JSON.stringify(expenses));
             localStorage.setItem('premium', premium);
-            localStorage.setItem('currentpage',1);
+            localStorage.setItem('currentPage',1);
             localStorage.setItem('lastPage', lastPage);
             localStorage.setItem('nextPage', response.data.nextPage);
             const page = 1;

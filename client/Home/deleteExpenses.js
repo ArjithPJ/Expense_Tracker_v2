@@ -3,7 +3,7 @@ async function deleteExpense(e){
         e.preventDefault();
         console.log(e.target.parentElement.parentElement);
         const expense_id = e.target.parentElement.querySelector("#expenseId").value;
-        const currentPage = localStorage.getItem('currentpage');
+        const currentPage = localStorage.getItem('currentPage');
         console.log(expense_id);
         const expenseDetails = {
             expense_id: expense_id,
