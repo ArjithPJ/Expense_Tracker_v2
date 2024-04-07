@@ -10,17 +10,26 @@ async function login(e) {
         }
         console.log(loginDetails);
         const response = await axios.post('http://localhost:3000/login', loginDetails)
-        if(response.status ===201){
+        if(response.status ===200){
             const userId = response.data.id;
             const expenses = response.data.expenses;
             const token = response.data.token;
             const premium = response.data.premium;
+            const lastPage = response.data.lastPage;
             console.log("Expenses", expenses)
             localStorage.setItem('token', token);
             localStorage.setItem('id', userId);
             localStorage.setItem('expenses', JSON.stringify(expenses));
             localStorage.setItem('premium', premium);
+            localStorage.setItem('currentpage',1);
+            localStorage.setItem('lastPage', lastPage);
+            const page = 1;
+            const pageExpenses =  response.data.pageExpenses;
+            const data = response.data;
+            localStorage.setItem('pageExpenses', JSON.stringify(pageExpenses));
+            localStorage.setItem('data', JSON.stringify(data));
             window.location.href = "../Home/index.html";
+        
         }
         else if(response.status === 404){
             window.location.href = "../Login/login.html";

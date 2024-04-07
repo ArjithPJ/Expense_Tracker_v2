@@ -3,22 +3,26 @@ async function addExpense(e) {
         e.preventDefault();
         console.log(e.target.amount.value);
         const token =localStorage.getItem('token');
-        
+        const currentPage = localStorage.getItem('currentpage');
         const expenseDetails = {
             amount: e.target.amount.value,
             description: e.target.description.value,
             category: e.target.category.value,
-            token: token
+            token: token,
+            currentPage: currentPage
         }
 
         console.log(expenseDetails);
         const response = await axios.post('http://localhost:3000/add-expense/'+token, expenseDetails);
         if(response.status === 200) {   
             const expenses= response.data.expenses;
+            const pageExpenses = response.data.pageExpenses;
             console.log("Expenses", expenses);
             localStorage.setItem('expenses',JSON.stringify(expenses));
+            localStorage.setItem('pageExpenses', JSON.stringify(pageExpenses));
+            console.log(pageExpenses);
             console.log("Expense Added in the database");
-            populateExpenses();
+            await populateExpenses();
         }
         else{
             console.log("Something went wrong");
@@ -31,7 +35,7 @@ async function addExpense(e) {
 
 
 // Function to populate expenses in the table
-function populateExpenses() {
+async function populateExpenses() {
     const buyPremium = localStorage.getItem("premium");
     if(buyPremium === "true"){
         const buyPremiumElement = document.querySelector(".buy-premium");
@@ -63,66 +67,46 @@ function populateExpenses() {
         });
         
     }
-    const expensesString = localStorage.getItem('expenses');
+    const expensesString = localStorage.getItem('pageExpenses');
     const expenses = JSON.parse(expensesString);
     const expenseList = document.getElementById('expense-table').getElementsByTagName('tbody')[0];
     expenseList.innerHTML = ''; // Clear previous entries
-    const token = localStorage.getItem('token');
-    const id =localStorage.getItem('id');
-    console.log("Id", id);
     // Loop through expenses and create table rows
     expenses.forEach(expense => {
         console.log(expense);
-        console.log(expense.id);
-        if(typeof id === typeof expense.id){
-            console.log("Same type");
-        }
-        if(parseInt(expense.id, 10) === parseInt(id,10)){
-            console.log(expense.id);
-            const tr = document.createElement('tr');
-            tr.innerHTML = `
-                <td id="amount">${expense.amount}</td>
-                <td id="description">${expense.description}</td>
-                <td id="category">${expense.category}</td>
-                <td>
-                    <form class="delete-expense" onsubmit="deleteExpense(event)">
-                        <input type="hidden" id ="expenseId" name="expenseId" value="${expense.expense_id}">
-                        <button type="submit" class="btn btn-danger">Delete</button>
-                    </form>
-                </td>
-            `;
-            expenseList.appendChild(tr);
-        }
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td id="amount">${expense.amount}</td>
+            <td id="description">${expense.description}</td>
+            <td id="category">${expense.category}</td>
+            <td>
+                <form class="delete-expense" onsubmit="deleteExpense(event)">
+                    <input type="hidden" id ="expenseId" name="expenseId" value="${expense.expense_id}">
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                </form>
+            </td>
+        `;
+        expenseList.appendChild(tr);
     });
+    const lastPage = localStorage.getItem('lastPage');
+    const paginationContainer = document.querySelector("#pagination");
+    paginationContainer.innerHTML = ""; // Clear previous buttons
+
+    for (let i = 1; i <= lastPage; i++) {
+        const button = document.createElement("button");
+        button.textContent = i;
+        button.classList.add("btn", "btn-secondary", "mx-1");
+        button.addEventListener("click", () => {
+            const response = axios.get(`http://localhost:3000/home/?page=${i}`);
+        });
+        paginationContainer.appendChild(button);
+    }
 }
+
 
 // Populate expenses when the page loads
 window.onload = populateExpenses;
 
-async function deleteExpense(e){
-    try{
-        e.preventDefault();
-        console.log(e.target.parentElement.parentElement);
-        const expense_id = e.target.parentElement.querySelector("#expenseId").value;
-        console.log(expense_id);
-        const expenseDetails = {
-            expense_id: expense_id,
-            token: token
-        };
-        const response = await axios.post("http://localhost:3000/delete-expense/"+token, expenseDetails);
-        if(response.status===200){
-            const expenses = response.data.expenses;
-            localStorage.setItem('expenses',JSON.stringify(expenses));
-            e.target.closest("tr").remove();
-        }
-        else{
-            console.log("Something went wrong");
-        }
-    }
-    catch{
-        console.log("Error");
-    }
-}
 
 async function populateLeaderboard(leaderboard) {
     // Check if leaderboard table already exists in the DOM
