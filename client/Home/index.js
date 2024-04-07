@@ -9,7 +9,7 @@ async function addExpense(e) {
             description: e.target.description.value,
             category: e.target.category.value,
             token: token,
-            currentPage: currentPage
+            currentPage: currentPage,
         }
 
         console.log(expenseDetails);
@@ -23,12 +23,7 @@ async function addExpense(e) {
             const previousPage = response.data.previousPage;
             const hasPreviousPage = response.data.hasPreviousPage;
             const lastPage = response.data.lastPage;
-            // currentPage: 1,
-            // hasNextPage: parseInt(currentPage,10)<total,
-            // nextPage: parseInt(currentPage, 10)+1,
-            // hasPreviousPage: parseInt(currentPage,10) > 1,
-            // previousPage: parseInt(currentPage,10) - 1,
-            // lastPage: parseInt(lastPage,10) });
+
             console.log("Expenses", expenses);
             localStorage.setItem('expenses',JSON.stringify(expenses));
             localStorage.setItem('pageExpenses', JSON.stringify(pageExpenses));
@@ -105,6 +100,7 @@ async function populateExpenses() {
         expenseList.appendChild(tr);
     });
     const lastPage = localStorage.getItem('lastPage');
+    const selectedValue = localStorage.getItem('selectedValue');
     const paginationContainer = document.querySelector("#pagination");
     const token = localStorage.getItem('token');
     paginationContainer.innerHTML = ""; // Clear previous buttons
@@ -115,7 +111,7 @@ async function populateExpenses() {
         button.classList.add("btn", "btn-secondary", "mx-1");
         paginationContainer.appendChild(button);
         button.addEventListener("click", () => {
-            axios.get(`http://localhost:3000/home/?page=${i}`,{
+            axios.get(`http://localhost:3000/home/?page=${i}&selectedValue=${selectedValue}`,{
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
@@ -123,7 +119,7 @@ async function populateExpenses() {
             .then((response) =>{
                 console.log("Response:", response);
                 const pageExpenses = response.data.pageExpenses;
-                console.log("Pageexpeenses:", pageExpenses);
+                console.log("Pageexpenses:", pageExpenses);
                 const currentPage = response.data.currentPage;
                 const nextPage = response.data.nextPage;
                 const hasPreviousPage = response.data.hasPreviousPage;
@@ -141,9 +137,9 @@ async function populateExpenses() {
     }
 }
 
-
 // Populate expenses when the page loads
 window.onload = populateExpenses;
+
 
 
 async function populateLeaderboard(leaderboard) {

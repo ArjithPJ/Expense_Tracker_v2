@@ -38,7 +38,8 @@ exports.postLogin = async (req, res, next) => {
                     nextPage: 2,
                     hasPreviousPage: 1 > 1,
                     previousPage: 0,
-                    lastPage: Math.ceil(total/5)});
+                    lastPage: Math.ceil(total/5),
+                    selectedValue: 5});
             } else {
                 res.status(401).json({ message: "Incorrect Password" });
             }

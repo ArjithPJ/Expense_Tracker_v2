@@ -47,6 +47,12 @@
                 <input class="btn btn-primary" id="btn" type="submit" value="Add Expense">
             </div>    
         </form>
+        <label for="entries">Show entries:</label>
+        <select id="entries" class="form-select">
+            <option value="5">5</option>
+            <option value="10">10</option>
+            <option value="20">20</option>
+        </select>
         <table class="expense-table" id="expense-table">
             <thead>
                 <tr>
@@ -67,6 +73,7 @@
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="index.js"></script>
+    <script src="pagination.js"></script>
     <script src="deleteExpenses.js"></script>
     <script>
         var token = localStorage.getItem('token');

@@ -24,6 +24,7 @@ async function login(e) {
             localStorage.setItem('currentPage',1);
             localStorage.setItem('lastPage', lastPage);
             localStorage.setItem('nextPage', response.data.nextPage);
+            localStorage.setItem('selectedValue',5);
             const page = 1;
             const pageExpenses =  response.data.pageExpenses;
             const data = response.data;
