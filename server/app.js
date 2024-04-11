@@ -11,14 +11,24 @@ const Orders = require('./models/purchases');
 const ForgotPasswordRequests = require('./models/forgotPasswordRequests');
 const FileUrls = require('./models/fileUrls');
 const path = require('path');
+const fs = require('fs');
+const helmet = require('helmet');
+const compression = require("compression");
+const morgan = require("morgan");
 
 const app = express();
 // app.set('view engine', 'ejs');
 // app.set('views', 'views');
 
 const adminRoutes = require('./routes/admin');
+const accessLogStream = fs.createWriteStream(path.join(__dirname, 'access.log'), {flags: 'a'});
 
 app.use(cors());
+
+
+app.use(helmet());
+app.use(compression());
+app.use(morgan('combined', {stream: accessLogStream}),);
 
 app.use(express.static('public'));
 app.use(bodyParser.urlencoded({extended: false}));
