@@ -1,35 +1,72 @@
-/* Set background image for the body */
 body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
     /* background-image: url('../business_woman.jpg'); */
+    background-color: #3b5999;
     background-size: cover;
-    background-repeat: no-repeat;
-    background-color: #4FFFB0;
+    background-position: center;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
-/* Style for the table */
 .expense-table {
     width: 100%;
-    border: 1px solid #000;
     border-collapse: collapse;
-    margin-top: 20px;
+    margin-bottom: 20px;
+    font-family: Arial, sans-serif; /* Use a suitable font */
 }
 
-.expense-table tr:nth-child(even) {
-    background-color: #fff; /* Set background color for even rows */
-}
-
-.expense-table tr:nth-child(odd) {
-    background-color: #fff; /* Set background color for odd rows */
-}
 .expense-table th, .expense-table td {
     padding: 8px;
-    text-align: left;
-    border-bottom: 1px solid #000; /* Add bottom border to table cells */
-    border-right: 1px solid #000; /* Add right border to table cells */
+    border: 1px solid #ddd; /* Light gray border */
 }
 
+.expense-table th {
+    background-color: #4267B2; /* Facebook blue */
+    color: #fff; /* White text */
+}
+
+.expense-table tbody tr {
+    background-color: #f9f9f9; /* Light gray background for even rows */
+}
+
+.expense-table tbody tr:hover {
+    background-color: #f0f0f0; /* Darker gray background on hover */
+}
 /* Style for table header */
 .expense-table th {
     background-color: #ccc; /* Set background color for table header */
     color: #000;
+}
+
+#download{
+    padding: 10px 20px;
+    background-color: #007bff;
+    font-family: cursive;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    border-radius: 3px;
+}
+#download:hover {
+    background-color: #0056b3;
+    box-shadow: 0 0 10px rgba(0, 123, 255, 0.5);
+}
+#buyButton{
+    padding: 10px 20px;
+    background-color: #007bff;
+    font-family: cursive;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    border-radius: 3px;
+}
+#buyButton:hover {
+    background-color: #0056b3;
+    box-shadow: 0 0 10px rgba(0, 123, 255, 0.5);
 }

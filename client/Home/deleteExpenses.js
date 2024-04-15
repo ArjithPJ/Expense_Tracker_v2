@@ -4,11 +4,13 @@ async function deleteExpense(e){
         console.log(e.target.parentElement.parentElement);
         const expense_id = e.target.parentElement.querySelector("#expenseId").value;
         const currentPage = localStorage.getItem('currentPage');
+        const selectedValue = localStorage.getItem('selectedValue');
         console.log(expense_id);
         const expenseDetails = {
             expense_id: expense_id,
             token: token,
-            currentPage: currentPage
+            currentPage: currentPage,
+            selectedValue: parseInt(selectedValue,10)
         };
         const response = await axios.post("http://localhost:3000/delete-expense/"+token, expenseDetails);
         if(response.status===200){

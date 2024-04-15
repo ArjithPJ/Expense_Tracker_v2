@@ -49,6 +49,7 @@ exports.postAddExpense = async (req, res, next) => {
     const category = req.body.category;
     const token = req.body.token;
     const currentPage = req.body.currentPage;
+    const selectedValue = req.body.selectedValue;
     const t = await sequelize.transaction();
     try {
         // Verify the token
@@ -78,20 +79,21 @@ exports.postAddExpense = async (req, res, next) => {
         const total = await Expenses.count({where: {id: decoded.id}});
         const pageExpenses = await Expenses.findAll({
             where: { id: decoded.id},
-            offset: (currentPage-1)*5,
-            limit: 5
+            offset: (currentPage-1)*selectedValue,
+            limit: selectedValue
         });
 
         console.log("pageExpenses:",pageExpenses);
         console.log("Expenses:", expenses);
-        const lastPage = Math.ceil(total/5);
+        const lastPage = Math.ceil(total/selectedValue);
         
         return res.status(200).json({ message: 'Expense Added', expenses: expenses, pageExpenses: pageExpenses,currentPage: parseInt(currentPage,10),
         hasNextPage: parseInt(currentPage,10)<total,
         nextPage: parseInt(currentPage, 10)+1,
         hasPreviousPage: parseInt(currentPage,10) > 1,
         previousPage: parseInt(currentPage,10) - 1,
-        lastPage: parseInt(lastPage,10) });
+        lastPage: parseInt(lastPage,10),
+        selectedValue: selectedValue });
     } 
     catch (error) {
         // Rollback the transaction if an error occurs
@@ -105,6 +107,7 @@ exports.postDeleteExpense = async (req, res, next) => {
     const expenseId = req.body.expense_id;
     const token = req.body.token;
     const currentPage = req.body.currentPage;
+    const selectedValue = req.body.selectedValue;
 
     try {
         const decoded = jwt.verify(token, 'nffoinofinoeifnaskmoj');
@@ -126,8 +129,8 @@ exports.postDeleteExpense = async (req, res, next) => {
             await t.commit();
             const pageExpenses = await Expenses.findAll({
                 where: { id: decoded.id},
-                offset: (currentPage-1)*5,
-                limit: 5
+                offset: (currentPage-1)*selectedValue,
+                limit: selectedValue
             });
     
             // Retrieve updated expenses
@@ -135,14 +138,15 @@ exports.postDeleteExpense = async (req, res, next) => {
             console.log("pageExpenses:",pageExpenses);
             console.log("Expenses:", expenses);
             const total = await Expenses.count({where: {id: decoded.id}});
-            const lastPage = Math.ceil(total/5);
+            const lastPage = Math.ceil(total/selectedValue);
             
             return res.status(200).json({ message: 'Expense Added', expenses: expenses, pageExpenses: pageExpenses,currentPage: parseInt(currentPage,10),
             hasNextPage: parseInt(currentPage,10)<total,
             nextPage: parseInt(currentPage, 10)+1,
             hasPreviousPage: parseInt(currentPage,10) > 1,
             previousPage: parseInt(currentPage,10) - 1,
-            lastPage: parseInt(lastPage,10) });
+            lastPage: parseInt(lastPage,10),
+            selectedValue: selectedValue });
         } catch (error) {
             // Rollback the transaction if an error occurs
             await t.rollback();

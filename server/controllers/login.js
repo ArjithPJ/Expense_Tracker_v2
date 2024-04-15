@@ -14,7 +14,7 @@ exports.postLogin = async (req, res, next) => {
         const password = req.body.password;
 
     
-        const user = await Users.findOne({ where: { email: email } },{transaction: t});
+        const user = await Users.findOne({ where: { email: email } },{ transaction: t});
 
         if (user) {
             const isPasswordCorrect = await bcrypt.compare(password, user.password);

@@ -18,7 +18,6 @@ async function login(e) {
             const lastPage = response.data.lastPage;
             console.log("Expenses", expenses)
             localStorage.setItem('token', token);
-            localStorage.setItem('id', userId);
             localStorage.setItem('expenses', JSON.stringify(expenses));
             localStorage.setItem('premium', premium);
             localStorage.setItem('currentPage',1);

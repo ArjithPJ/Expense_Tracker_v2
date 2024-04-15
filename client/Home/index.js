@@ -4,12 +4,14 @@ async function addExpense(e) {
         console.log(e.target.amount.value);
         const token =localStorage.getItem('token');
         const currentPage = localStorage.getItem('currentPage');
+        const selectedValue = localStorage.getItem('selectedValue');
         const expenseDetails = {
             amount: e.target.amount.value,
             description: e.target.description.value,
             category: e.target.category.value,
             token: token,
             currentPage: currentPage,
+            selectedValue: parseInt(selectedValue,10)
         }
 
         console.log(expenseDetails);
@@ -56,7 +58,7 @@ async function populateExpenses() {
         }
         const leaderboard = document.createElement('button');
         leaderboard.className='leaderboard';
-        leaderboard.textContent="Leaderboard";
+        leaderboard.textContent="Leaderboard 👑";
         buyPremiumElement.appendChild(leaderboard);
         const token = localStorage.getItem('token');
         const leaderboardDetails = {token:token};
@@ -108,7 +110,8 @@ async function populateExpenses() {
     for (let i = 1; i <= lastPage; i++) {
         const button = document.createElement("button");
         button.textContent = i;
-        button.classList.add("btn", "btn-secondary", "mx-1");
+        //button.classList.add("btn", "btn-secondary", "mx-1");
+        button.id = 'pagebutton';
         paginationContainer.appendChild(button);
         button.addEventListener("click", () => {
             axios.get(`http://localhost:3000/home/?page=${i}&selectedValue=${selectedValue}`,{
@@ -124,11 +127,14 @@ async function populateExpenses() {
                 const nextPage = response.data.nextPage;
                 const hasPreviousPage = response.data.hasPreviousPage;
                 const hasNextPage = response.data.hasNextPage;
+                const lastPage = response.data.lastPage;
+                console.log("Last Page:", lastPage);
                 localStorage.setItem('pageExpenses',JSON.stringify(pageExpenses));
                 localStorage.setItem('currentPage',JSON.stringify(currentPage));
                 localStorage.setItem('nextPage', JSON.stringify(nextPage));
                 localStorage.setItem('hasPreviousPage',JSON.stringify(hasPreviousPage));
                 localStorage.setItem('hasNextPage', JSON.stringify(hasNextPage));
+                localStorage.setItem('lastPage', JSON.stringify(lastPage));
                 populateExpenses();
             })
             
