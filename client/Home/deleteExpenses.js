@@ -32,7 +32,7 @@ async function deleteExpense(e){
             localStorage.setItem('hasPreviousPage', JSON.stringify(hasPreviousPage));
             localStorage.setItem('lastPage', JSON.stringify(lastPage));
             console.log(pageExpenses);
-            console.log("Expense Added in the database");
+            console.log("Expense deleted in the database");
             await populateExpenses();
         }
         else{

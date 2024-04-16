@@ -30,6 +30,8 @@ router.post('/password/forgotpassword', forgotPasswordController.postForgotPassw
 
 router.get('/password/resetpassword/:uuid', resetPasswordController.getResetPassword);
 router.post('/password/resetpassword', resetPasswordController.postResetPassword);
+
+router.get('/download', downloadController.getDownload);
 router.post('/download', authenticatemiddleware.authenticate, downloadController.postDownload);
 
 module.exports = router;

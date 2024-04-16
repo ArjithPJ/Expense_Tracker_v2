@@ -48,6 +48,7 @@ label{
     cursor: pointer;
     transition: background-color 0.3s ease;
     border-radius: 3px;
+    display: inline;
 }
 .button:hover {
     background-color: #0056b3;

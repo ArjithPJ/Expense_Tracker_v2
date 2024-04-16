@@ -3,6 +3,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const path = require('path');
 const sequelize = require('../util/database');
+require('dotenv').config();
 
 
 exports.getSignup = (req, res, next) => {
@@ -34,7 +35,7 @@ exports.postSignup = async (req, res, next) => {
             password: hashedPassword // Store the hashed password
         }, {transaction: t});
         console.log(newUser);
-        const token = jwt.sign({id: newUser.id},'nffoinofinoeifnaskmoj');
+        const token = jwt.sign({id: newUser.id}, process.env.TOKEN_SECRET);
 
         await t.commit();
         return res.status(201).json({message: "Signup successful", token: token});

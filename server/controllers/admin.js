@@ -17,7 +17,7 @@ exports.getExpenses = async (req, res, next) => {
 
         const token = authHeader.split(' ')[1]; // Extract just the token value
         console.log("Token:", token);
-        const id = await jwt.verify(token, 'nffoinofinoeifnaskmoj')
+        const id = await jwt.verify(token, process.env.TOKEN_SECRET)
         const total = await Expenses.count({where: { id: id.id}});
         console.log(total);
         const pageExpenses = await Expenses.findAll({
@@ -53,7 +53,7 @@ exports.postAddExpense = async (req, res, next) => {
     const t = await sequelize.transaction();
     try {
         // Verify the token
-        const decoded = await jwt.verify(token, 'nffoinofinoeifnaskmoj');
+        const decoded = await jwt.verify(token, process.env.TOKEN_SECRET);
         console.log('Decoded token:', decoded);
 
         // Create the expense
@@ -110,7 +110,7 @@ exports.postDeleteExpense = async (req, res, next) => {
     const selectedValue = req.body.selectedValue;
 
     try {
-        const decoded = jwt.verify(token, 'nffoinofinoeifnaskmoj');
+        const decoded = jwt.verify(token, process.env.TOKEN_SECRET);
         console.log('Decoded token:', decoded.id);
 
         // Start a transaction

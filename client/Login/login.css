@@ -92,3 +92,10 @@ button:hover {
 .signup-link a:hover {
     text-decoration: underline; 
 }
+
+p {
+    font-family: cursive;
+    font-size:  16px;
+    text-align: center;
+    color: red;
+}

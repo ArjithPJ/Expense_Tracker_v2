@@ -1,10 +1,5 @@
 const isPremium = localStorage.getItem('premium');
 
-if (isPremium === 'true') {
-    const buyButton = document.getElementById('buyButton');
-    buyButton.style.display = 'none';
-}
-
 if (!isPremium || isPremium !== 'true') {
     document.getElementById('download').disabled = true;
 }

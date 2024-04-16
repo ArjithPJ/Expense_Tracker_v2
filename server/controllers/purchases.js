@@ -15,7 +15,7 @@ exports.postbuyPremium = (req, res, next) => {
     
     // Here, you would typically store the payment ID in your database
     // This is just a placeholder response
-    const id = jwt.verify(token, 'nffoinofinoeifnaskmoj', (err, decoded) => {
+    const id = jwt.verify(token, process.env.TOKEN_SECRET, (err, decoded) => {
         if(err){
             console.log("Something went wrong");
         }

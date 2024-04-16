@@ -56,17 +56,18 @@ body {
     background-color: #0056b3;
     box-shadow: 0 0 10px rgba(0, 123, 255, 0.5);
 }
-#buyButton{
-    padding: 10px 20px;
-    background-color: #007bff;
-    font-family: cursive;
-    color: #fff;
-    border: none;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    border-radius: 3px;
+#download:disabled {
+    background-color: #d9d9d9; 
+    color: #a9a9a9; 
+    cursor: not-allowed; 
 }
-#buyButton:hover {
-    background-color: #0056b3;
-    box-shadow: 0 0 10px rgba(0, 123, 255, 0.5);
+
+a{
+    color: red
+}
+
+p {
+    font-family: cursive;
+    font-size:24px;
+    color: black;
 }

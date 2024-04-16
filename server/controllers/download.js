@@ -6,10 +6,26 @@ require('dotenv').config();
 
 const sequelize = require('../util/database');
 
+exports.getDownload = async (req, res, next) => {
+    try{
+        const token = req.query.token;
+        console.log("Token", token);
+        const decoded = await jwt.verify(token, process.env.TOKEN_SECRET);
+        const userId= decoded.id;
+        const downloads = await FileUrls.findAll({ where:{ id: userId}});
+
+        res.status(200).json({fsuccess: true, downloads: downloads, err: null});
+    }
+    catch(error){
+        console.log(error);
+        res.status(500).json({message:"Internal Server Error", downloads: '', success: false, err: error})
+    }
+};
+
 exports.postDownload = async (req, res, next) => {
     try{
         const token =req.body.token;
-        const decoded = await jwt.verify(token, 'nffoinofinoeifnaskmoj');
+        const decoded = await jwt.verify(token, process.env.TOKEN_SECRET);
         const expenses = await Expenses.findAll({ where: {id: decoded.id }});
         console.log(expenses);
         const stringifiedExpenses = JSON.stringify(expenses);

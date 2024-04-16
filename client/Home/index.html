@@ -181,8 +181,18 @@
         document.getElementById('buyButton').onclick = function () {
             openRazorpay();
         };
-        document.getElementById('report').onclick = function () {
-            window.location.href = '../Report/report.html';
+        document.getElementById('report').onclick = async function () {
+            const token = localStorage.getItem('token');
+            const response = await axios.get('http://localhost:3000/download?token='+token);
+            if(response.status===200){
+                console.log("Downloads successfully fetched");
+                const downloads = response.data.downloads;
+                localStorage.setItem('downloads', JSON.stringify(downloads));
+                window.location.href = '../Report/report.html';
+            }
+            else{
+                console.error("Something went wrong");
+            }
         }
     </script>
   </body>

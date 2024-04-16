@@ -31,7 +31,7 @@ exports.postLogin = async (req, res, next) => {
                     limit: 5
                 });
                 console.log("pageExpenses:", pageExpenses);
-                const token = jwt.sign({ id: userId }, 'nffoinofinoeifnaskmoj');
+                const token = jwt.sign({ id: userId }, process.env.TOKEN_SECRET);
                 await t.commit();
                 res.status(200).json({ token: token, id: userId, expenses: expenses, premium: premium, pageExpenses: pageExpenses, currentPage: 1,
                     hasNextPage: 5<total,
