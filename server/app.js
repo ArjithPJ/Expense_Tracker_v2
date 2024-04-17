@@ -26,7 +26,7 @@ const accessLogStream = fs.createWriteStream(path.join(__dirname, 'access.log'),
 app.use(cors());
 
 
-app.use(helmet());
+app.use(helmet({ contentSecurityPolicy: false }));
 app.use(compression());
 app.use(morgan('combined', {stream: accessLogStream}),);
 
@@ -42,7 +42,7 @@ app.use(adminRoutes);
 app.use((req, res) => {
     console.log('url', req.Url);
     res.sendFile(path.join(__dirname, `public/${req.Url}`));
-})
+});
 
 Users.hasMany(Expenses);
 Expenses.belongsTo(Users, { foreignKey: 'id'});
