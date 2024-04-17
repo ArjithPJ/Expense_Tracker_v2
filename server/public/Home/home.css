@@ -1,0 +1,230 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    /* background-image: url('../business_woman.jpg'); */
+    background-color: #3b5999;
+    background-size: cover;
+    background-position: center;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.container {
+    background-color: rgba(255, 255, 255, 0.8);
+    padding: 40px;
+    width: 500px;
+    border-radius: 0px;
+    align-items: center;
+    
+}
+
+.container-expenses {
+    background-color: rgba(255, 255, 255, 0.8);
+    padding: 60px;
+    border-radius: 10px;
+    align-items: center;
+}
+
+.input-container {
+    align-items: center;
+    
+}
+
+.input-short {
+    width: 150px  /* Adjust width as needed */
+}
+label{
+    font-family: Georgia;
+}
+.button{
+    padding: 10px 20px;
+    background-color: #007bff;
+    font-family: cursive;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    border-radius: 3px;
+    display: inline;
+}
+.button:hover {
+    background-color: #0056b3;
+    box-shadow: 0 0 10px rgba(0, 123, 255, 0.5);
+}
+.leaderboard {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    font-family: cursive;
+    border-radius: 3px;
+}
+.leaderboard:hover {
+    background-color: #0056b3;
+    box-shadow: 0 0 10px rgba(0, 123, 255, 0.5);
+}
+
+#add-button {
+    background-color: #3b5998; /* Facebook blue */
+    color: #fff; /* White text */
+    border: none;
+    border-radius: 3px; /* Rounded corners */
+    padding: 10px 20px; /* Padding for better clickability */
+    font-size: 16px; /* Adjust font size as needed */
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#add-button:hover {
+    background-color: #0056b3; /* Darker blue color on hover */
+    border-color: #0056b3; /* Darker blue color for border on hover */
+}
+
+.btn {
+    background-color: #AA0000; /* Facebook blue */
+    color: #fff; /* White text */
+    border: none;
+    border-radius: 0px; /* Rounded corners */
+    padding: 5px 10px; /* Padding for better clickability */
+    font-size: 16px; /* Adjust font size as needed */
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.btn:hover {
+    background-color: #0056b3; /* Darker blue color on hover */
+    border-color: #0056b3; /* Darker blue color for border on hover */
+}
+
+.btn-shine {
+    background-color: #007bff;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-shine::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 300%;
+    height: 300%;
+    background: rgba(255, 255, 255, 0.4);
+    border-radius: 50%;
+    transition: all 0.5s;
+    pointer-events: none;
+    transform: translate(-50%, -50%);
+    z-index: 0;
+}
+
+.btn-shine:hover::after {
+    width: 0;
+    height: 0;
+}
+
+.btn-shine .btn {
+    position: relative;
+    z-index: 1;
+}
+.form-control {
+    border: 2px solid #ccc;
+    border-radius: 5px;
+    padding: 7px;
+    font-size: 14px;
+    transition: border-color 0.3s ease;
+    width: 50%;
+}
+.form-control:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+#pagebutton{
+    background-color: transparent;
+    color: blue;
+    border: none;
+    border-radius: 5px;
+    padding: 5px 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#pagebutton:hover{
+    background-color: #0056b3;
+}
+.form-select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-color: #f8f9fa;
+    border: 1px solid #ced4da;
+    border-radius: 3px;
+    padding: 7px;
+    width: 10%;
+    cursor: pointer;
+    font-family: Georgia;
+    font-size: 14px;
+}
+
+.form-select:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+.expense-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+    font-family: Arial, sans-serif; /* Use a suitable font */
+}
+
+.expense-table th, .expense-table td {
+    padding: 8px;
+    border: 1px solid #ddd; /* Light gray border */
+}
+
+.expense-table th {
+    background-color: #4267B2; /* Facebook blue */
+    color: #fff; /* White text */
+}
+
+.expense-table tbody tr:nth-child(even) {
+    background-color: #f9f9f9; /* Light gray background for even rows */
+}
+
+.expense-table tbody tr:hover {
+    background-color: #f0f0f0; /* Darker gray background on hover */
+}
+
+.leaderboard-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+    font-family: Arial, sans-serif; /* Use a suitable font */
+}
+
+.leaderboard-table th, .expense-table td {
+    padding: 8px;
+    border: 1px solid #ddd; /* Light gray border */
+}
+
+.leaderboard-table th {
+    background-color:  #E50914; /* Facebook blue */
+    color: #fff; /* White text */
+}
+
+.leaderboard-table tbody tr:nth-child(even) {
+    background-color: #f9f9f9; /* Light gray background for even rows */
+}
+
+.leaderboard-table tbody tr:hover {
+    background-color: #f0f0f0; /* Darker gray background on hover */
+}

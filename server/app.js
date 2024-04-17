@@ -39,6 +39,11 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(adminRoutes);
 //app.use(errorController.get404);
 
+app.use((req, res) => {
+    console.log('url', req.Url);
+    res.sendFile(path.join(__dirname, `public/${req.Url}`));
+})
+
 Users.hasMany(Expenses);
 Expenses.belongsTo(Users, { foreignKey: 'id'});
 
