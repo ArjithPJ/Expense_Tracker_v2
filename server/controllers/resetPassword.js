@@ -11,7 +11,7 @@ exports.getResetPassword = async (req, res, next) => {
     const uuid = req.params.uuid;
     console.log(uuid);
     try{
-        res.sendFile(path.join(__dirname, '../', '../','client', 'Login', 'resetPassword.html'));
+        res.sendFile(path.join(__dirname, '../', 'public', 'Login', 'resetPassword.html'));
     }
     catch(error){
         console.error(error);
