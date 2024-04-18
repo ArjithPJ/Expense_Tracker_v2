@@ -18,7 +18,7 @@ exports.postForgotPassword = async (req, res, next) => {
         apiKey.apiKey = process.env.SMTP_API_KEY;
 
         const resetToken = uuidv4();
-        const resetLink = `http://localhost:3000/password/resetpassword/${resetToken}`;
+        const resetLink = `http://44.206.240.170/password/resetpassword/${resetToken}`;
         console.log("Reset Link:", resetLink);
 
         const tranEmailApi = new Sib.TransactionalEmailsApi();
